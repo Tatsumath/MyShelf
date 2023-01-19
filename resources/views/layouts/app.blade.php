@@ -7,12 +7,17 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name') }} | @yield('title') </title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
-
+    {{-- font awesome --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+        integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    {{-- css --}}
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
@@ -23,7 +28,9 @@
                 <a class="navbar-brand" href="{{ url('/') }}">
                     {{ config('app.name', 'Laravel') }}
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
@@ -49,16 +56,46 @@
                                 </li>
                             @endif
                         @else
+                            {{-- home button --}}
+                            <li class="nav-item">
+                                <a href="{{ route('index') }}" class="nav-link">
+                                    <i class="fa-solid fa-house text-dark icon-sm"></i>
+                                </a>
+                            </li>
+                            {{-- create post button --}}
+                            <li class="nav-item">
+                                <a href="{{ route('posts.create') }}" class="nav-link">
+                                    <i class="fa-solid fa-circle-plus text-dark icon-sm"></i>
+                                </a>
+                            </li>
+
+                            {{-- account --}}
+
                             <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }}
+                                <a id="navbarDropdown" class="nav-link " href="#" role="button"
+                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    @if (Auth::user()->avatar)
+                                        <img src="{{ asset('/storage/avatars/' . Auth::user()->avatar) }}"
+                                            class="rounded-circle avatar-sm " alt="">
+                                    @else
+                                        <i class="fa-solid fa-circle-user text-dark icon-sm"></i>
+                                    @endif
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+
+                                    {{-- <a href="{{ route('admin.users') }}" class="dropdown-item">
+                                        <i class="fa-solid fa-user-gear"></i>Admin
+                                    </a> --}}
+
+                                    <a href="{{ route('profile.show', Auth::user()->id) }}" class="dropdown-item">
+                                        <i class="fa-solid fa-circle-user text-dark"></i> Profile
+                                    </a>
+
                                     <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
+                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
+                                        <i class="fa-solid fa-right-from-bracket"></i> {{ __('Logout') }}
                                     </a>
 
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
@@ -72,9 +109,36 @@
             </div>
         </nav>
 
-        <main class="py-4">
-            @yield('content')
+        <main class="py-5">
+            <div class="container">
+                <div class="row justify-content-center">
+                    {{-- admin controls --}}
+                    @if (request()->is('admin/*'))
+                        <div class="col-3">
+
+                            <div class="list-group">
+                                <a href="{{ route('admin.users') }}" class="list-group-item">
+                                    <i class="fa-solid fa-users"></i>Users
+                                </a>
+                                <a href="#" class="list-group-item">
+                                    <i class="fa-solid fa-newspaper"></i>Posts
+                                </a>
+                                <a href="#" class="list-group-item">
+                                    <i class="fa-solid fa-tags"></i>Categories
+                                </a>
+                            </div>
+
+
+                        </div>
+                    @endif
+
+                    <div class="col-9">
+                        @yield('content')
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 </body>
+
 </html>
