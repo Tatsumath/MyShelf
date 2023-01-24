@@ -31,5 +31,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('index');
     Route::resource('/posts',PostController::class);
     Route::resource('/profile',ProfileController::class);
+    //asasasa
 });
 
