@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,4 +22,15 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::get('/category',[CategoryController::class,'store']); // run this URL/URI and it will generate categories if the data are accidentally deleted
+
+Route::group(['middleware' => 'auth'], function () {
+
+    Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('index');
+    Route::resource('/posts',PostController::class);
+    Route::resource('/profile',ProfileController::class);
+    //asasasa
+});
+
